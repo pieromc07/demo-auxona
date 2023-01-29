@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import {dirname, join} from 'path';
 import {fileURLToPath} from 'url';
 import router from './routes/routes.js';
-import connection from './settings/conection.js';
+// import connection from './settings/conection.js';
 
 
 dotenv.config();
