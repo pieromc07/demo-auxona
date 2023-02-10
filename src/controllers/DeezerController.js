@@ -20,11 +20,13 @@ export const getTrack = async (req = request, res = response) => {
     res.json(track);
 };
 
-export const storeTrack = async (req = request, res = response) => {
+export const storeTrack = (req = request, res = response) => {
   
     const {body} = req;
-    const track = await saveTrack(body);
-    res.json(track);
-
+    const track = saveTrack(body).then((response) => {
+        res.json(response);
+    }).catch((error) => {
+        res.json(error);
+    });
 };
 

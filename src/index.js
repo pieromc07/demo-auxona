@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import {dirname, join} from 'path';
 import {fileURLToPath} from 'url';
 import router from './routes/routes.js';
+import pool from './settings/connection.js'
 
 
 dotenv.config();
@@ -23,3 +24,10 @@ app.listen(app.get('port'), () => {
     console.log('Server on port', app.get('port'));
     console.log('http://localhost:' + app.get('port') + '/app');
 });
+
+pool.connect().then(() => {
+    console.log('Database connected');
+}).catch((error) => {
+    console.log(error);
+});
+
