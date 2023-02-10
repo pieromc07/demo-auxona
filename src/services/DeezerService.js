@@ -52,7 +52,27 @@ export const searchTrack = async (query) => {
 export const TrackId = async (id) => {
     try{
         const response = await axios.get(`${BASE_URL}track/${id}`);
-        return response.data;
+        // return response.data;
+        return {
+            id: response.data.id,
+            deezer_id: response.data.id,
+            youtube_id: null,
+            title: response.data.title,
+            title_short: response.data.title_short,
+            duration: 0,
+            track_position: response.data.track_position,
+            disk_number: response.data.disk_number,
+            release_date: response.data.release_date,
+            preview: response.data.preview,
+            md5_image: `https://e-cdns-images.dzcdn.net/images/cover/${response.data.md5_image}/250x250-000000-80-0-0.jpg`,
+            artist_name: response.data.artist.name,
+            album_name: response.data.album.title,
+            searchable: response.data.title_short + ' ' + response.data.title_version + ' ' + response.data.artist.name,
+            artist_id: response.data.artist.id,
+            album_id: response.data.album.id,
+            type: response.data.type,
+        };
+
     }catch(error){
         console.log(error);
     }

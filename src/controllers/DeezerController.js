@@ -1,6 +1,7 @@
 import { request, response } from "express";
 
 import {searchTrack, TrackId} from "../services/DeezerService.js";
+import {searchByIdDeezer, saveTrack } from "../services/AuxonaService.js";
 
 export const searchDeezer = async (req = request, res = response) => {
     const {query} = req.params;
@@ -11,6 +12,19 @@ export const searchDeezer = async (req = request, res = response) => {
 
 export const getTrack = async (req = request, res = response) => {
     const {id} = req.params;
+    const found = await searchByIdDeezer(id);
+    if(found){
+        return res.json(found);
+    }
     const track = await TrackId(id);
     res.json(track);
 };
+
+export const storeTrack = async (req = request, res = response) => {
+  
+    const {body} = req;
+    const track = await saveTrack(body);
+    res.json(track);
+
+};
+
