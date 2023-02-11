@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import {dirname, join} from 'path';
 import {fileURLToPath} from 'url';
@@ -15,6 +16,7 @@ app.set('port', process.env.PORT || 5000);
 app.set('view engine', 'ejs');
 app.set('views', join(__dirname, 'views'));
 
+app.use(cors());
 app.use(express.static(join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
