@@ -62,14 +62,16 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-4 p-2 border">
+			<div class="col-md-4 p-2 content-history">
 				<!-- History -->
 				<div class="row">
-					<div class="col-12 text-center">
+					<div class="col-12 text-center py-2">
 						<h5>Historial</h5>
+						<span class="separador"></span>
 					</div>
-					<div class="history">
-						<div id="player"></div>
+					<div class="col-12 d-flex justify-content-center">
+						<div id="history">
+						</div>	
 					</div>
 				</div>
 			</div>
@@ -99,7 +101,7 @@
 									<i class="fas fa-step-backward"></i>
 								</button>
 								<button class="player-control" id="player-play">
-									<i class="fas fa-play"></i>
+									<i class="fas fa-play" id="icon-play"></i>
 								</button>
 								<button class="player-control" id="player-next">
 									<i class="fas fa-step-forward"></i>
@@ -129,7 +131,7 @@
 							<!-- volume -->
 							<div class="player-volume">
 								<button class="player-volume-button" id="player-volume">
-									<i class="fas fa-volume-up"></i>
+									<i class="fas fa-volume-mute" id="icon-volume"></i>
 								</button>
 								<div class="player-volume-bar">
 									<div class="progress-bar">
@@ -137,7 +139,7 @@
 									</div>
 								</div>
 							</div>
-							<!-- <div id="player"></div> -->
+							<div id="player"></div>
 						</div>
 					</div>
 				</div>

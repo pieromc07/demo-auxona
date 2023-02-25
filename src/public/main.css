@@ -6,15 +6,87 @@
     font-family: 'Roboto', sans-serif;
 }
 
-.history{
-    max-height: 65vh;
-    overflow-y: auto;
+.content-history{
+    height: 70vh;
+    border: 1px solid #808080;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+#history{
     width: 100%;
+    height: 100%;
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
-    border: 1px solid red;
 }
 
+.history_content{
+    width: 100%;
+    height: auto;
+    border: 1px solid #808080;
+    border-radius: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+    position: relative;
+    margin-bottom: 10px;
+}
+.history_content_item{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    position: relative;
+    /* border: 1px solid blue; */
+}
+.history_content_item_image{
+    flex-basis: 100px;
+    position: relative;
+}
+.history_content_item_image img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.history_content_item_description{
+    flex: 1 1 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 10px;
+}
+.history_content_item_description_title{
+    font-size: 14px;
+    font-weight: 500;
+    color: #000;
+    margin-bottom: 3px;
+}
+.history_content_item_description_artist{
+    font-size: 12px;
+    font-weight: 300;
+    color: #808080;
+}
+.history_content_item_image_play{
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+    transition: all 0.3s ease;
+    border: none;
+}
+.history_content:hover .history_content_item_image_play{
+    opacity: .8;
+    display: block;
+}
 .tracks{
     width: 100%;
    max-height: 65vh;
@@ -231,7 +303,7 @@
 #player{
     height: 100%;
     width: 100%;
-    /* display: none; */
+    display: none;
 }
 #player iframe{
     width: 100%;
