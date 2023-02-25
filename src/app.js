@@ -22,10 +22,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(router);
 
-app.listen(app.get('port'), () => {
-    console.log('Server on port', app.get('port'));
-    console.log('http://localhost:' + app.get('port') + '/app');
-});
 
 pool.connect().then(() => {
     console.log('Database connected');
@@ -33,3 +29,4 @@ pool.connect().then(() => {
     console.log(error);
 });
 
+export default app;
