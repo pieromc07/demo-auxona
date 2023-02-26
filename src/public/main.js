@@ -74,6 +74,8 @@ async function play(id) {
 	const player_current = document.querySelector('#player-current');
 	const progress_volume = document.querySelector('#progress-volume');
 	const progress_track = document.querySelector('#progress-track');
+	const main_player = document.querySelector('#main-player');
+	main_player.classList.toggle('move__left');
 	player_image.src = track.md5_image;
 	player_title.innerHTML = track.title;
 	player_artist.innerHTML = track.artist_name;
@@ -81,13 +83,8 @@ async function play(id) {
 	player_current.innerHTML = '00:00';
 	progress_volume.value = player.getVolume();
 	progress_track.value = player.getCurrentTime();
-	if (progress_volume.value == 0) {
-		document.querySelector('#icon-volume').classList.remove('fa-volume-up');
-		document.querySelector('#icon-volume').classList.add('fa-volume-mute');
-	} else {
-		document.querySelector('#icon-volume').classList.remove('fa-volume-mute');
-		document.querySelector('#icon-volume').classList.add('fa-volume-up');
-	}
+	const icon_volumen = document.querySelector('#icon-volumen');
+	
 	youTubePlayerChangeVideoId(track.youtube_id);
 	if (playerState == 0) {
 		//* Espera 500ms para que cargue el video
@@ -231,36 +228,35 @@ document.addEventListener('DOMContentLoaded', () => {
 				container.innerHTML = '';
 
 				tracks.map(result => {
-					const column = document.createElement('div');
-					column.classList.add('col-6');
-					column.classList.add('col-md-4');
-					column.classList.add('col-lg-3');
 					const card = document.createElement('div');
-					card.classList.add('card-track');
+					card.classList.add('card__track');
 					const img = document.createElement('img');
 					img.src = result.md5_image;
-					img.classList.add('track_image');
+					img.classList.add('card__track--img');
 					img.alt = result.title;
 					const description = document.createElement('div');
-					description.classList.add('track_description');
+					description.classList.add('card__track--description');
 					const title = document.createElement('p');
+					title.classList.add('description__title');
 					title.textContent = result.title_short;
 					description.appendChild(title);
+					const artist = document.createElement('p');
+					artist.classList.add('description__artist');
+					artist.textContent = result.artist[0].name;
+					description.appendChild(artist);
 					const button = document.createElement('button');
-					button.classList.add('track-play');
+					button.classList.add('card__track--btn');
 					button.addEventListener('click', () => {
 						play(result.id);
 					});
 					const icon = document.createElement('i');
-					icon.classList.add('fas');
-					icon.classList.add('fa-play');
+					icon.classList.add('bi');
+					icon.classList.add('bi-play-fill');
 					button.appendChild(icon);
 					card.appendChild(img);
 					card.appendChild(description);
 					card.appendChild(button);
-					column.appendChild(card);
-					container.appendChild(column);
-
+					container.appendChild(card);
 				});
 			} else {
 				const container = document.querySelector('#tracks');
@@ -275,6 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	const player_play = document.querySelector('#player-play');
 	player_play.addEventListener('click', () => {
+		console.log("playerState: " + playerState);
 		if (playerState == 0) {
 			player.playVideo();
 			playerState = 1;
@@ -283,11 +280,11 @@ document.addEventListener('DOMContentLoaded', () => {
 			playerState = 0;
 		}
 		if (playerState == 0) {
-			document.querySelector('#icon-play').classList.remove('fa-play');
-			document.querySelector('#icon-play').classList.add('fa-pause');
+			document.querySelector('#icon-play').classList.remove('bi-play-fill');
+			document.querySelector('#icon-play').classList.add('bi-pause-fill');
 		} else {
-			document.querySelector('#icon-play').classList.remove('fa-pause');
-			document.querySelector('#icon-play').classList.add('fa-play');
+			document.querySelector('#icon-play').classList.remove('bi-pause-fill');
+			document.querySelector('#icon-play').classList.add('bi-play-fill');
 		}
 
 	});
@@ -303,11 +300,19 @@ document.addEventListener('DOMContentLoaded', () => {
 	progress_volume.addEventListener('change', (e) => {
 		player.setVolume(e.target.value);
 		if (e.target.value == 0) {
-			icon_volumen.classList.remove('fa-volume-up');
-			icon_volumen.classList.add('fa-volume-mute');
+			icon_volumen.classList.remove('bi-volume-up-fill');
+			icon_volumen.classList.add('bi-volume-mute-fill');
+		} else if (e.target.value <= 50) {
+			if (icon_volumen.classList.contains('bi-volume-mute-fill')) {
+				icon_volumen.classList.remove('bi-volume-mute-fill');
+				icon_volumen.classList.add('bi-volume-down-fill');
+			} else {
+				icon_volumen.classList.remove('bi-volume-up-fill');
+				icon_volumen.classList.add('bi-volume-down-fill');
+			}
 		} else {
-			icon_volumen.classList.remove('fa-volume-mute');
-			icon_volumen.classList.add('fa-volume-up');
+			icon_volumen.classList.remove('bi-volume-down-fill');
+			icon_volumen.classList.add('bi-volume-up-fill');
 		}
 	});
 
@@ -315,29 +320,67 @@ document.addEventListener('DOMContentLoaded', () => {
 	player_volume.addEventListener('click', () => {
 		if (player.isMuted()) {
 			player.unMute();
+			if (icon_volumen.classList.contains('bi-volume-mute-fill')) {
+				icon_volumen.classList.remove('bi-volume-mute-fill');
+				if (progress_volume.value <= 50) {
+					icon_volumen.classList.add('bi-volume-down-fill');
+				} else {
+					icon_volumen.classList.add('bi-volume-up-fill');
+				}
+			}
 		} else {
 			player.mute();
+			if (icon_volumen.classList.contains('bi-volume-down-fill')) {
+				icon_volumen.classList.remove('bi-volume-down-fill');
+			} else {
+				icon_volumen.classList.remove('bi-volume-up-fill');
+			}
+			icon_volumen.classList.add('bi-volume-mute-fill');
 		}
 	});
 
 	const player_next = document.querySelector('#player-next');
 	player_next.addEventListener('click', () => {
-		if(historyIndex < history.length - 1){
+		if (historyIndex < history.length - 1) {
 			historyIndex++;
 			play(history[historyIndex].deezer_id);
-		}else{
+		} else {
 			alert('No hay mas canciones');
 		}
 	});
 
 	const player_back = document.querySelector('#player-back');
 	player_back.addEventListener('click', () => {
-		if(historyIndex > 0){
+		if (historyIndex > 0) {
 			historyIndex--;
 			play(history[historyIndex].deezer_id);
-		}else{
+		} else {
 			alert('No hay mas canciones');
 		}
+	});
+	const main_player = document.querySelector('#main-player');
+	const main_history = document.querySelector('#main-history');
+	const show_player = document.querySelector('#show-player');
+	const show_history = document.querySelector('#show-history');
+	const back_search = document.querySelector('#back-search');
+	const back_search_h = document.querySelector('#back-search-h');
+	show_player.addEventListener('click', () => {
+		main_player.classList.toggle('move__left');
+	});
+	show_history.addEventListener('click', () => {
+		main_history.classList.toggle('d_none');
+		setTimeout(() => {
+			main_history.classList.toggle('move__right');
+		}, 500);
+	});
+	back_search.addEventListener('click', () => {
+		main_player.classList.toggle('move__left');
+	});
+	back_search_h.addEventListener('click', () => {
+		main_history.classList.toggle('move__right');
+		setTimeout(() => {
+			main_history.classList.toggle('d_none');
+		}, 500);
 	});
 });
 
