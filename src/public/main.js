@@ -67,23 +67,28 @@ function updateVolumeIconButton() {
 	}
 }
 
-function updateIconPlay() {
+function updateIconPlay(state) {
 	const icon_play = document.querySelector('#icon-play');
 	if (playerState == 0) {
 		if (icon_play.classList.contains('bi-play-fill')) {
 			icon_play.classList.toggle('bi-play-fill');
 			icon_play.classList.toggle('bi-pause-fill');
-		}else if (icon_play.classList.contains('bi-pause-fill')) {
+		} else if (icon_play.classList.contains('bi-pause-fill')) {
 			icon_play.classList.toggle('bi-pause-fill');
 			icon_play.classList.toggle('bi-play-fill');
 		}
-	}else if (playerState == 1) {
+	} else if (playerState == 1 && state == 0) {
 		if (icon_play.classList.contains('bi-pause-fill')) {
 			icon_play.classList.toggle('bi-pause-fill');
 			icon_play.classList.toggle('bi-play-fill');
-		}else if (icon_play.classList.contains('bi-play-fill')) {
+		} else if (icon_play.classList.contains('bi-play-fill')) {
 			icon_play.classList.toggle('bi-play-fill');
 			icon_play.classList.toggle('bi-pause-fill');
+		}
+	}else if (playerState == 1 && state == 1) {
+		if (icon_play.classList.contains('bi-play-fill')) {
+			icon_play.classList.remove('bi-play-fill');
+			icon_play.classList.add('bi-pause-fill');
 		}
 	}
 }
@@ -160,7 +165,7 @@ async function play(id) {
 			playerState = 1;
 			addHistory(track);
 			updateHistory();
-			updateIconPlay();
+			updateIconPlay(01);
 			main_player.classList.toggle('move__left');
 			if (saved) {
 				saveTrack(track);
@@ -239,44 +244,51 @@ function updateHistory() {
 	if (history.length > 0) {
 		content.innerHTML = '';
 		history.map(track => {
-			const history_content = document.createElement('div');
-			history_content.classList.add('history_content');
-			const history_content_item = document.createElement('div');
-			history_content_item.classList.add('history_content_item');
-			const history_content_item_image = document.createElement('div');
-			history_content_item_image.classList.add('history_content_item_image');
-			const history_content_item_image_img = document.createElement('img');
-			history_content_item_image_img.src = track.md5_image;
-			const history_content_item_image_play = document.createElement('button');
-			history_content_item_image_play.classList.add('history_content_item_image_play');
-			history_content_item_image_play.addEventListener('click', () => {
+			// <div class="history__card">
+			// 		<div class="history__card--img">
+			// 			<img src="https://cdns-images.dzcdn.net/images/cover/d41d8cd98f00b204e9800998ecf8427e/264x264-000000-80-0-0.jpg"
+			// 				alt="Album Cover" class="" loading="lazy" />
+			// 		</div>
+			// 		<div class="history__card--info">
+			// 			<h5 class="history__card--title">No hay canciones</h5>
+			// 			<h6 class="history__card--artist">No hay Artistas</h6>
+			// 		</div>
+			// 		<button class="history__card--btn" onclick="play()">
+			// 			<i class="bi bi-play-fill"></i>
+			// 		</button>
+			// 	</div>
+			const card = document.createElement('div');
+			card.classList.add('history__card');
+			const img = document.createElement('div');
+			img.classList.add('history__card--img');
+			const img_src = document.createElement('img');
+			img_src.src = track.md5_image;
+			img.appendChild(img_src);
+			const info = document.createElement('div');
+			info.classList.add('history__card--info');
+			const title = document.createElement('h5');
+			title.classList.add('history__card--title');
+			title.innerHTML = track.title;
+			const artist = document.createElement('h6');
+			artist.classList.add('history__card--artist');
+			artist.innerHTML = track.artist_name;
+			info.appendChild(title);
+			info.appendChild(artist);
+			const btn = document.createElement('button');
+			btn.classList.add('history__card--btn');
+			btn.addEventListener('click', () => {
 				play(track.deezer_id);
 			}
 			);
-			const history_content_item_image_play_icon = document.createElement('i');
-			history_content_item_image_play_icon.classList.add('fas');
-			history_content_item_image_play_icon.classList.add('fa-play');
-			const history_content_item_description = document.createElement('div');
-			history_content_item_description.classList.add('history_content_item_description');
-			const history_content_item_description_title = document.createElement('p');
-			history_content_item_description_title.classList.add('history_content_item_description_title');
-			history_content_item_description_title.innerHTML = track.title;
-			const history_content_item_description_artist = document.createElement('p');
-			history_content_item_description_artist.classList.add('history_content_item_description_artist');
-			history_content_item_description_artist.innerHTML = track.artist_name;
-
-			history_content_item_image_play.appendChild(history_content_item_image_play_icon);
-			history_content_item_image.appendChild(history_content_item_image_img);
-			history_content_item_image.appendChild(history_content_item_image_play);
-			history_content_item_description.appendChild(history_content_item_description_title);
-			history_content_item_description.appendChild(history_content_item_description_artist);
-			history_content_item.appendChild(history_content_item_image);
-			history_content_item.appendChild(history_content_item_description);
-			history_content.appendChild(history_content_item);
-			content.appendChild(history_content);
-		});
-	} else {
-		content.innerHTML = '<div class="history-empty">No hay historial</div>';
+			const icon = document.createElement('i');
+			icon.classList.add('bi');
+			icon.classList.add('bi-play-fill');
+			btn.appendChild(icon);
+			card.appendChild(img);
+			card.appendChild(info);
+			card.appendChild(btn);
+			content.appendChild(card);
+		})
 	}
 }
 
@@ -294,8 +306,8 @@ function spinner() {
 
 document.addEventListener('DOMContentLoaded', () => {
 	updateHistory();
-	updateIconPlay();
-
+	updateIconPlay(00);
+	console.log(playerState);
 	const search = document.querySelector('#search');
 	search.addEventListener('click', async () => {
 		const query = document.querySelector('#data-search').value;
@@ -357,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			player.pauseVideo();
 			playerState = 0;
 		}
-		updateIconPlay();
+		updateIconPlay(0);
 	});
 
 	const progress_track = document.querySelector('#progress-track');
